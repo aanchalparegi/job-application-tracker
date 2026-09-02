@@ -10,11 +10,18 @@ function App() {
 
   const [editingIndex, setEditingIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
+  const [statusFilter, setStatusFilter] = useState("All");
   
-  const filteredApplications = applications.filter((application) =>
-     application.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     application.company.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const filteredApplications = applications.filter((application) => {
+  const matchesSearch =
+    application.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    application.company.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesStatus =
+    statusFilter === "All" || application.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
   // Save or update an application
   const handleSave = () => {
     if (!jobTitle.trim() || !company.trim()) {
@@ -164,7 +171,16 @@ const deleteApplication = (idToDelete) => {
        value={searchTerm}
        onChange={(e) => setSearchTerm(e.target.value)}
       />
-
+     <select
+  value={statusFilter}
+  onChange={(e) => setStatusFilter(e.target.value)}
+>
+  <option value="All">All Statuses</option>
+  <option value="Applied">Applied</option>
+  <option value="Interview">Interview</option>
+  <option value="Rejected">Rejected</option>
+  <option value="Offer">Offer</option>
+</select>
       {filteredApplications.length === 0 ? (
         <p>No applications yet.</p>
       ) : (
