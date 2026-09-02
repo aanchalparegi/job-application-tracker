@@ -9,7 +9,12 @@ function App() {
   const [status, setStatus] = useState("Applied");
 
   const [editingIndex, setEditingIndex] = useState(null);
-
+  const [searchTerm, setSearchTerm] = useState(""); 
+  
+  const filteredApplications = applications.filter((application) =>
+     application.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     application.company.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   // Save or update an application
   const handleSave = () => {
     if (!jobTitle.trim() || !company.trim()) {
@@ -18,10 +23,13 @@ function App() {
     }
 
     const application = {
-      jobTitle: jobTitle.trim(),
-      company: company.trim(),
-      status: status,
-    };
+  id: editingIndex !== null
+    ? applications[editingIndex].id
+    : Date.now(),
+  jobTitle: jobTitle.trim(),
+  company: company.trim(),
+  status: status,
+};
 
     if (editingIndex !== null) {
       const updatedApplications = [...applications];
@@ -37,30 +45,37 @@ function App() {
     clearForm();
   };
 
-  // Edit an application
-  const handleEdit = (index) => {
-    const application = applications[index];
+ // Edit an application
+const handleEdit = (id) => {
+  const application = applications.find(
+    (application) => application.id === id
+  );
 
-    setJobTitle(application.jobTitle);
-    setCompany(application.company);
-    setStatus(application.status);
+  if (!application) {
+    return;
+  }
 
-    setEditingIndex(index);
-    setShowForm(true);
-  };
+  setJobTitle(application.jobTitle);
+  setCompany(application.company);
+  setStatus(application.status);
+
+  const originalIndex = applications.findIndex(
+    (application) => application.id === id
+  );
+
+  setEditingIndex(originalIndex);
+  setShowForm(true);
+};
 
   // Delete an application
-  const deleteApplication = (indexToDelete) => {
-    const updatedApplications = applications.filter(
-      (_, index) => index !== indexToDelete
-    );
+const deleteApplication = (idToDelete) => {
+  const updatedApplications = applications.filter(
+    (application) => application.id !== idToDelete
+  );
 
-    setApplications(updatedApplications);
-
-    if (editingIndex === indexToDelete) {
-      clearForm();
-    }
-  };
+  setApplications(updatedApplications);
+  clearForm();
+};
 
   // Clear form
   const clearForm = () => {
@@ -143,12 +158,17 @@ function App() {
 
       {/* Applications */}
       <h2>My Applications</h2>
+      <input
+       type="text"
+       placeholder="Search by job title or company..."
+       value={searchTerm}
+       onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
-      {applications.length === 0 ? (
+      {filteredApplications.length === 0 ? (
         <p>No applications yet.</p>
       ) : (
-        applications.map((application, index) => (
-          <div key={index}>
+      filteredApplications.map((application, index) => (          <div key={index}>
             <h3>{application.jobTitle}</h3>
 
             <p>
@@ -159,13 +179,12 @@ function App() {
               <strong>Status:</strong> {application.status}
             </p>
 
-            <button onClick={() => handleEdit(index)}>
-              Edit
-            </button>
-
-            <button onClick={() => deleteApplication(index)}>
-              Delete
-            </button>
+       <button onClick={() => handleEdit(application.id)}>
+  Edit
+</button>
+           <button onClick={() => deleteApplication(application.id)}>
+  Delete
+</button>
           </div>
         ))
       )}
