@@ -7,7 +7,7 @@ function App() {
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
   const [status, setStatus] = useState("Applied");
-
+ const [applicationDate, setApplicationDate] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [statusFilter, setStatusFilter] = useState("All");
@@ -36,6 +36,7 @@ function App() {
   jobTitle: jobTitle.trim(),
   company: company.trim(),
   status: status,
+  applicationDate: applicationDate,
 };
 
     if (editingIndex !== null) {
@@ -65,6 +66,7 @@ const handleEdit = (id) => {
   setJobTitle(application.jobTitle);
   setCompany(application.company);
   setStatus(application.status);
+  setApplicationDate(application.applicationDate);
 
   const originalIndex = applications.findIndex(
     (application) => application.id === id
@@ -89,6 +91,7 @@ const deleteApplication = (idToDelete) => {
     setJobTitle("");
     setCompany("");
     setStatus("Applied");
+    setApplicationDate("");
     setShowForm(false);
     setEditingIndex(null);
   };
@@ -98,6 +101,7 @@ const deleteApplication = (idToDelete) => {
     setJobTitle("");
     setCompany("");
     setStatus("Applied");
+    setApplicationDate("");
     setEditingIndex(null);
     setShowForm(true);
   };
@@ -150,6 +154,13 @@ const deleteApplication = (idToDelete) => {
           </select>
 
           <br />
+          <br />
+
+<input
+  type="date"
+  value={applicationDate}
+  onChange={(e) => setApplicationDate(e.target.value)}
+/>
 
           <button onClick={handleSave}>
             {editingIndex !== null
@@ -181,6 +192,7 @@ const deleteApplication = (idToDelete) => {
   <option value="Rejected">Rejected</option>
   <option value="Offer">Offer</option>
 </select>
+
       {filteredApplications.length === 0 ? (
         <p>No applications yet.</p>
       ) : (
@@ -194,7 +206,20 @@ const deleteApplication = (idToDelete) => {
             <p>
               <strong>Status:</strong> {application.status}
             </p>
-
+          
+ <p>
+  <strong>Application Date:</strong>{" "}
+  {application.applicationDate
+    ? new Date(application.applicationDate + "T00:00:00").toLocaleDateString(
+        "en-US",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }
+      )
+    : "Not provided"}
+</p>
        <button onClick={() => handleEdit(application.id)}>
   Edit
 </button>
