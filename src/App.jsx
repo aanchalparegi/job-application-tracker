@@ -3,11 +3,11 @@ import { useState } from "react";
 function App() {
   const [applications, setApplications] = useState([]);
   const [showForm, setShowForm] = useState(false);
-
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
   const [status, setStatus] = useState("Applied");
- const [applicationDate, setApplicationDate] = useState("");
+  const [applicationDate, setApplicationDate] = useState("");
+  const [notes, setNotes] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [statusFilter, setStatusFilter] = useState("All");
@@ -29,7 +29,7 @@ function App() {
       return;
     }
 
-    const application = {
+   const application = {
   id: editingIndex !== null
     ? applications[editingIndex].id
     : Date.now(),
@@ -37,6 +37,7 @@ function App() {
   company: company.trim(),
   status: status,
   applicationDate: applicationDate,
+  notes: notes,
 };
 
     if (editingIndex !== null) {
@@ -67,7 +68,7 @@ const handleEdit = (id) => {
   setCompany(application.company);
   setStatus(application.status);
   setApplicationDate(application.applicationDate);
-
+ setNotes(application.notes || "");
   const originalIndex = applications.findIndex(
     (application) => application.id === id
   );
@@ -92,6 +93,7 @@ const deleteApplication = (idToDelete) => {
     setCompany("");
     setStatus("Applied");
     setApplicationDate("");
+    setNotes("");
     setShowForm(false);
     setEditingIndex(null);
   };
@@ -102,6 +104,7 @@ const deleteApplication = (idToDelete) => {
     setCompany("");
     setStatus("Applied");
     setApplicationDate("");
+    setNotes("");
     setEditingIndex(null);
     setShowForm(true);
   };
@@ -162,6 +165,15 @@ const deleteApplication = (idToDelete) => {
   onChange={(e) => setApplicationDate(e.target.value)}
 />
 
+<br />
+
+<textarea
+  placeholder="Notes"
+  value={notes}
+  onChange={(e) => setNotes(e.target.value)}
+  rows="4"
+/>
+
           <button onClick={handleSave}>
             {editingIndex !== null
               ? "Update Application"
@@ -219,6 +231,10 @@ const deleteApplication = (idToDelete) => {
         }
       )
     : "Not provided"}
+</p>
+
+<p>
+  <strong>Notes:</strong> {application.notes || "No notes"}
 </p>
        <button onClick={() => handleEdit(application.id)}>
   Edit
