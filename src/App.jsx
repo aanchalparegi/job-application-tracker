@@ -8,19 +8,23 @@ function App() {
   const [status, setStatus] = useState("Applied");
   const [applicationDate, setApplicationDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [priority, setPriority] = useState("Medium");
   const [editingIndex, setEditingIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); 
   const [statusFilter, setStatusFilter] = useState("All");
-  
+  const [priorityFilter, setPriorityFilter] = useState("All");
   const filteredApplications = applications.filter((application) => {
   const matchesSearch =
     application.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
     application.company.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesStatus =
-    statusFilter === "All" || application.status === statusFilter;
+const matchesStatus =
+  statusFilter === "All" || application.status === statusFilter;
 
-  return matchesSearch && matchesStatus;
+const matchesPriority =
+  priorityFilter === "All" || application.priority === priorityFilter;
+
+return matchesSearch && matchesStatus && matchesPriority;
 });
   // Save or update an application
   const handleSave = () => {
@@ -38,6 +42,7 @@ function App() {
   status: status,
   applicationDate: applicationDate,
   notes: notes,
+  priority: priority,
 };
 
     if (editingIndex !== null) {
@@ -68,7 +73,8 @@ const handleEdit = (id) => {
   setCompany(application.company);
   setStatus(application.status);
   setApplicationDate(application.applicationDate);
- setNotes(application.notes || "");
+  setNotes(application.notes || "");
+  setPriority(application.priority || "Medium");
   const originalIndex = applications.findIndex(
     (application) => application.id === id
   );
@@ -94,6 +100,7 @@ const deleteApplication = (idToDelete) => {
     setStatus("Applied");
     setApplicationDate("");
     setNotes("");
+    setPriority("Medium");
     setShowForm(false);
     setEditingIndex(null);
   };
@@ -105,6 +112,7 @@ const deleteApplication = (idToDelete) => {
     setStatus("Applied");
     setApplicationDate("");
     setNotes("");
+    setPriority("Medium");
     setEditingIndex(null);
     setShowForm(true);
   };
@@ -155,6 +163,19 @@ const deleteApplication = (idToDelete) => {
             <option value="Rejected">Rejected</option>
             <option value="Offer">Offer</option>
           </select>
+          <br />
+
+          <label>
+  Priority:
+  <select
+    value={priority}
+    onChange={(e) => setPriority(e.target.value)}
+  >
+    <option value="High">High</option>
+    <option value="Medium">Medium</option>
+    <option value="Low">Low</option>
+  </select>
+</label>
 
           <br />
           <br />
@@ -195,16 +216,14 @@ const deleteApplication = (idToDelete) => {
        onChange={(e) => setSearchTerm(e.target.value)}
       />
      <select
-  value={statusFilter}
-  onChange={(e) => setStatusFilter(e.target.value)}
+  value={priorityFilter}
+  onChange={(e) => setPriorityFilter(e.target.value)}
 >
-  <option value="All">All Statuses</option>
-  <option value="Applied">Applied</option>
-  <option value="Interview">Interview</option>
-  <option value="Rejected">Rejected</option>
-  <option value="Offer">Offer</option>
+  <option value="All">All Priorities</option>
+  <option value="High">High</option>
+  <option value="Medium">Medium</option>
+  <option value="Low">Low</option>
 </select>
-
       {filteredApplications.length === 0 ? (
         <p>No applications yet.</p>
       ) : (
@@ -218,7 +237,9 @@ const deleteApplication = (idToDelete) => {
             <p>
               <strong>Status:</strong> {application.status}
             </p>
-          
+          <p>
+              <strong>Priority:</strong> {application.priority || "Medium"}
+          </p>
  <p>
   <strong>Application Date:</strong>{" "}
   {application.applicationDate
