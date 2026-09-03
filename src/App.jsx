@@ -148,8 +148,8 @@ const deleteApplication = (idToDelete) => {
   };
 
   return (
-    <div>
-      <h1>Job Application Tracker</h1>
+  <div className="app-container">
+    <h1>Job Application Tracker</h1>
       <div className="dashboard">
   <h2>Dashboard</h2>
 
@@ -193,106 +193,134 @@ const deleteApplication = (idToDelete) => {
       </button>
 
       {/* Application Form */}
-      {showForm && (
-        <div>
-          <h2>
-            {editingIndex !== null
-              ? "Edit Job Application"
-              : "Add Job Application"}
-          </h2>
+     {showForm && (
+  <div className="application-form">
+    <div className="form-header">
+      <h2>
+        {editingIndex !== null
+          ? "Edit Job Application"
+          : "Add Job Application"}
+      </h2>
+      <p>Keep track of your application details.</p>
+    </div>
 
-          <input
-            type="text"
-            placeholder="Job Title"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-          />
+    <div className="form-grid">
+      <div className="form-group">
+        <label>Job Title</label>
+        <input
+          type="text"
+          placeholder="e.g. Administrative Assistant"
+          value={jobTitle}
+          onChange={(e) => setJobTitle(e.target.value)}
+        />
+      </div>
 
-          <br />
+      <div className="form-group">
+        <label>Company</label>
+        <input
+          type="text"
+          placeholder="e.g. Microsoft"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+      </div>
 
-          <input
-            type="text"
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          />
+      <div className="form-group">
+        <label>Status</label>
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Offer">Offer</option>
+        </select>
+      </div>
 
-          <br />
+      <div className="form-group">
+        <label>Priority</label>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
 
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="Applied">Applied</option>
-            <option value="Interview">Interview</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Offer">Offer</option>
-          </select>
-          <br />
+      <div className="form-group">
+        <label>Application Date</label>
+        <input
+          type="date"
+          value={applicationDate}
+          onChange={(e) => setApplicationDate(e.target.value)}
+        />
+      </div>
 
-          <label>
-  Priority:
+      <div className="form-group full-width">
+        <label>Notes</label>
+        <textarea
+          placeholder="Add notes about this application..."
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          rows="4"
+        />
+      </div>
+    </div>
+
+    <div className="form-actions">
+      <button className="save-button" onClick={handleSave}>
+        {editingIndex !== null
+          ? "Update Application"
+          : "Save Application"}
+      </button>
+
+      <button className="cancel-button" onClick={clearForm}>
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+
+      {/* Applications */}
+     <h2>My Applications</h2>
+
+<div className="filters">
+  <input
+    type="text"
+    placeholder="Search by job title or company..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+
   <select
-    value={priority}
-    onChange={(e) => setPriority(e.target.value)}
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
   >
+    <option value="All">All Statuses</option>
+    <option value="Applied">Applied</option>
+    <option value="Interview">Interview</option>
+    <option value="Rejected">Rejected</option>
+    <option value="Offer">Offer</option>
+  </select>
+
+  <select
+    value={priorityFilter}
+    onChange={(e) => setPriorityFilter(e.target.value)}
+  >
+    <option value="All">All Priorities</option>
     <option value="High">High</option>
     <option value="Medium">Medium</option>
     <option value="Low">Low</option>
   </select>
-</label>
-
-          <br />
-          <br />
-
-<input
-  type="date"
-  value={applicationDate}
-  onChange={(e) => setApplicationDate(e.target.value)}
-/>
-
-<br />
-
-<textarea
-  placeholder="Notes"
-  value={notes}
-  onChange={(e) => setNotes(e.target.value)}
-  rows="4"
-/>
-
-          <button onClick={handleSave}>
-            {editingIndex !== null
-              ? "Update Application"
-              : "Save Application"}
-          </button>
-
-          <button onClick={clearForm}>
-            Cancel
-          </button>
-        </div>
-      )}
-
-      {/* Applications */}
-      <h2>My Applications</h2>
-      <input
-       type="text"
-       placeholder="Search by job title or company..."
-       value={searchTerm}
-       onChange={(e) => setSearchTerm(e.target.value)}
-      />
-     <select
-  value={priorityFilter}
-  onChange={(e) => setPriorityFilter(e.target.value)}
->
-  <option value="All">All Priorities</option>
-  <option value="High">High</option>
-  <option value="Medium">Medium</option>
-  <option value="Low">Low</option>
-</select>
+</div>
       {filteredApplications.length === 0 ? (
         <p>No applications yet.</p>
       ) : (
-      filteredApplications.map((application, index) => (          <div key={index}>
+      filteredApplications.map((application, index) => (  
+           <div className="application-card" key={index}>
             <h3>{application.jobTitle}</h3>
 
             <p>
@@ -300,11 +328,19 @@ const deleteApplication = (idToDelete) => {
             </p>
 
             <p>
-              <strong>Status:</strong> {application.status}
-            </p>
-          <p>
-              <strong>Priority:</strong> {application.priority || "Medium"}
-          </p>
+  <strong>Status:</strong>{" "}
+  <span className={`status-badge ${application.status.toLowerCase()}`}>
+    {application.status}
+  </span>
+</p>
+         <p>
+  <strong>Priority:</strong>{" "}
+  <span
+    className={`priority-badge ${(application.priority || "Medium").toLowerCase()}`}
+  >
+    {application.priority || "Medium"}
+  </span>
+</p>
  <p>
   <strong>Application Date:</strong>{" "}
   {application.applicationDate
