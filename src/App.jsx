@@ -1,7 +1,21 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 function App() {
-  const [applications, setApplications] = useState([]);
+const [applications, setApplications] = useState([]);
+const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+  const savedApplications = localStorage.getItem("applications");
+
+  if (savedApplications) {
+    setApplications(JSON.parse(savedApplications));
+  }
+
+  setIsLoaded(true);
+}, []);
+useEffect(() => {
+  if (isLoaded) {
+    localStorage.setItem("applications", JSON.stringify(applications));
+  }
+}, [applications, isLoaded]);
   const [showForm, setShowForm] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
