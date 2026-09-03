@@ -13,6 +13,22 @@ function App() {
   const [searchTerm, setSearchTerm] = useState(""); 
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
+  const totalApplications = applications.length;
+  const appliedApplications = applications.filter(
+  (application) => application.status === "Applied"
+  ).length;
+  const interviewApplications = applications.filter(
+  (application) => application.status === "Interview"
+).length;
+const rejectedApplications = applications.filter(
+  (application) => application.status === "Rejected"
+).length;
+const offerApplications = applications.filter(
+  (application) => application.status === "Offer"
+).length;
+const highPriorityApplications = applications.filter(
+  (application) => application.priority === "High"
+).length;
   const filteredApplications = applications.filter((application) => {
   const matchesSearch =
     application.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -120,6 +136,41 @@ const deleteApplication = (idToDelete) => {
   return (
     <div>
       <h1>Job Application Tracker</h1>
+      <div className="dashboard">
+  <h2>Dashboard</h2>
+
+  <div className="dashboard-cards">
+    <div className="dashboard-card">
+      <h3>Total Applications</h3>
+      <p>{totalApplications}</p>
+    </div>
+
+    <div className="dashboard-card">
+      <h3>Applied</h3>
+      <p>{appliedApplications}</p>
+    </div>
+
+    <div className="dashboard-card">
+      <h3>Interviews</h3>
+      <p>{interviewApplications}</p>
+    </div>
+
+    <div className="dashboard-card">
+      <h3>Rejected</h3>
+      <p>{rejectedApplications}</p>
+    </div>
+
+    <div className="dashboard-card">
+      <h3>Offers</h3>
+      <p>{offerApplications}</p>
+    </div>
+
+    <div className="dashboard-card">
+      <h3>High Priority</h3>
+      <p>{highPriorityApplications}</p>
+    </div>
+  </div>
+</div>
 
       <p>Track your job applications in one place.</p>
 
